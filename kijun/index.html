@@ -1700,7 +1700,8 @@ main .wrap { padding-bottom: 88px; }
     "이지보드|15.0": "가",
     "이지칠판|X": "부",
     "탐투스|11.0": "부"
-   }
+   },
+   "noStats": true
   },
   "keywords": [],
   "checked": "2026-10-19",
@@ -4647,7 +4648,7 @@ main .wrap { padding-bottom: 88px; }
       var wds = colWidths(cols, state.tableDraft, n);
       var ebands = floorBands(cols, state.tableDraft);
       return '<div class="sec"><div class="lhead"><p class="label">' + title + " · 고치는 중</p></div>" +
-        (grid ? statsHTML(e, state.tableDraft, true) : "") +
+        (grid && !t.noStats ? statsHTML(e, state.tableDraft, true) : "") +
         '<div class="tbl sheet editing' + (grid ? " grid" : "") + '"><table class="tedit">' +
         (cols.length ? "<thead><tr>" + cols.map(function (c) { return "<th>" + esc(c) + "</th>"; }).join("") + "<th></th></tr></thead>" : "") +
         "<tbody>" + state.tableDraft.map(function (r, i) {
@@ -4707,7 +4708,7 @@ main .wrap { padding-bottom: 88px; }
     }).join("");
     return '<div class="sec"><div class="lhead"><p class="label">' + title + "</p>" +
       (btn || xbtn ? '<span class="tacts">' + xbtn + btn + "</span>" : "") + "</div>" + nbar +
-      (grid ? statsHTML(e, t.rows || [], false) : "") + (rooms ? recentHTML(e) : "") +
+      (grid && !t.noStats ? statsHTML(e, t.rows || [], false) : "") + (rooms ? recentHTML(e) : "") +
       '<div class="tbl' + (sheet ? " sheet" : "") + (grid ? " grid" : "") + '"><table>' +
       (cols.length ? "<thead><tr>" + head + "</tr></thead>" : "") +
       "<tbody>" + body + "</tbody></table></div>" +
