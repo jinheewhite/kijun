@@ -1702,6 +1702,17 @@ main .wrap { padding-bottom: 88px; }
     "탐투스|11.0": "부"
    }
   },
+  "keywords": [],
+  "checked": "2026-10-19",
+  "important": true
+ },
+ {
+  "id": "board-summary",
+  "cat": "board",
+  "status": "info",
+  "symptom": "교실별 전자칠판 통계·메모",
+  "prep": [],
+  "steps": [],
   "memo": [
    "기준: ‘기전여고 전자칠판 현황’ 엑셀(2026-10-19).",
    "선생님들은 대부분 윈도우 화면에서 전자칠판을 쓴다.",
@@ -4919,13 +4930,6 @@ main .wrap { padding-bottom: 88px; }
       '<label for="f-links">다운로드·링크 <small>한 줄에 ‘이름 | 주소 | 설명’ · 주소는 https:// 로 시작</small><textarea id="f-links" rows="2">' + esc(d.links) + "</textarea></label>" +
       (hasTable ? '<label for="f-table">표 <small>첫 줄은 제목 줄, 칸은 | 로 구분</small><textarea id="f-table" rows="10">' + esc(d.table) + "</textarea></label>" : "") +
       (hasCodes ? '<label for="f-codes">반별 비밀번호 <small>한 줄에 ‘반 비밀번호’ (예: 101 1001)</small><textarea id="f-codes" rows="9">' + esc(d.codes) + "</textarea></label>" : "") +
-      '<label for="f-secrets">보관 정보 <small>한 줄에 ‘이름 | 비밀번호’ · 비밀번호를 비우면 ‘별도 보관’</small><textarea id="f-secrets" rows="2">' + esc(d.secrets) + "</textarea></label>" +
-      '<div class="row3">' +
-        '<label for="f-cname">연락처 이름<input type="text" id="f-cname" value="' + esc(d.cname) + '"></label>' +
-        '<label for="f-cnum">전화번호<input type="text" id="f-cnum" inputmode="tel" value="' + esc(d.cnum) + '"></label>' +
-        '<label for="f-cext">내선<input type="text" id="f-cext" value="' + esc(d.cext) + '"></label>' +
-      "</div>" +
-      '<label for="f-kw">검색어 <small>쉼표로 구분</small><input type="text" id="f-kw" value="' + esc(d.kw) + '"></label>' +
       '<label for="f-checked">확인일<input type="date" id="f-checked" value="' + esc(d.checked) + '"></label>' +
       (hasImg ? '<label class="chk" for="f-noimg"><input type="checkbox" id="f-noimg"' + (d.noimg ? " checked" : "") + "> 첨부 사진 빼기</label>" : "");
     return '<form class="editor" id="editor" data-id="' + esc(e.id) + '" novalidate>' +
