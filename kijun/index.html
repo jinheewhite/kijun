@@ -4466,6 +4466,34 @@ main .wrap { padding-bottom: 88px; }
     "</div>";
   }
 
+  // 기종별 통계를 별도 창에서 깔끔하게 보여준다 (화면에 안 보이는 표라도 새 창에서는 볼 수 있게)
+  function openBoardStats(e) {
+    var st = boardStats(e.table, (e.table && e.table.rows) || []);
+    var rows = st.groups.map(function (x) {
+      return "<tr><td>" + esc(x.co) + "</td><td>" + esc(x.and || "–") + "</td><td>" + esc(x.ops || "–") + '</td><td class="num">' + x.n + "</td><td>" + esc(upLabel(upVal(e, upKey(x.co, x.and))) || "–") + "</td></tr>";
+    }).join("");
+    var line = statsLine(st);
+    var html = "<!doctype html><html><head><meta charset=utf8><title>" + esc(e.symptom || "기종별 통계") + "</title><style>" +
+      "body{font-family:'IBM Plex Sans KR','Malgun Gothic',sans-serif;padding:24px;color:#111}" +
+      "h1{font-size:20px;text-align:center;margin:0 0 6px}" +
+      "p.meta{margin:0 0 14px;font-size:13px;text-align:center;color:#555}" +
+      "table{border-collapse:collapse;width:100%;font-size:13px;margin:0 auto}" +
+      "th,td{border:1px solid #333;padding:4px 10px;text-align:center}" +
+      "th{background:#f0f0f0}" +
+      "tfoot td{font-weight:600}" +
+      "@media print{body{padding:0}}" +
+      "</style></head><body>" +
+      "<h1>" + esc(e.symptom || "기종별 통계") + "</h1>" +
+      (line ? '<p class="meta">' + esc(line) + "</p>" : "") +
+      "<table><thead><tr><th>회사</th><th>안드로이드</th><th>OPS</th><th>대수</th><th>업그레이드</th></tr></thead>" +
+      "<tbody>" + rows + "</tbody>" +
+      '<tfoot><tr><td colspan="3">계</td><td class="num">' + st.total + "</td><td></td></tr></tfoot></table>" +
+      "</body></html>";
+    var win = window.open("", "_blank");
+    if (!win) { toast("팝업이 차단되었어요. 팝업 허용 후 다시 눌러 주세요."); return; }
+    win.document.open(); win.document.write(html); win.document.close();
+  }
+
   // 표 고치기 칸 너비: 열 내용 길이에 맞추고 비고 열만 넓게 (엑셀처럼)
   function textEm(s) {
     s = String(s == null ? "" : s);
@@ -4669,6 +4697,8 @@ main .wrap { padding-bottom: 88px; }
       ? '<button type="button" class="act" data-act="tedit" data-id="' + esc(e.id) + '">표 고치기</button>' : "";
     var xbtn = state.canDownload && !state.tableEdit
       ? '<button type="button" class="act xl" data-act="xlsx" data-id="' + esc(e.id) + '">엑셀 받기</button>' : "";
+    var sbtn = grid && t.noStats && !state.tableEdit
+      ? '<button type="button" class="act" data-act="stats-win" data-id="' + esc(e.id) + '">기종별 통계 (새 창)</button>' : "";
     // 비고 칸은 표 고치기 없이 바로 고친다 (여러 칸 고친 뒤 한 번에 저장)
     var nc = cols.indexOf("비고");
     var noteOn = state.canWrite && !state.reorder && !state.tableEdit && nc > -1;
@@ -4707,7 +4737,7 @@ main .wrap { padding-bottom: 88px; }
       return "<tr" + (rc.trim() ? ' class="' + rc.trim() + '"' : "") + ">" + cells + "</tr>";
     }).join("");
     return '<div class="sec"><div class="lhead"><p class="label">' + title + "</p>" +
-      (btn || xbtn ? '<span class="tacts">' + xbtn + btn + "</span>" : "") + "</div>" + nbar +
+      (btn || xbtn || sbtn ? '<span class="tacts">' + sbtn + xbtn + btn + "</span>" : "") + "</div>" + nbar +
       (grid && !t.noStats ? statsHTML(e, t.rows || [], false) : "") + (rooms ? recentHTML(e) : "") +
       '<div class="tbl' + (sheet ? " sheet" : "") + (grid ? " grid" : "") + '"><table>' +
       (cols.length ? "<thead><tr>" + head + "</tr></thead>" : "") +
@@ -5248,6 +5278,11 @@ main .wrap { padding-bottom: 88px; }
     ev.preventDefault();
     if (state.saving) return;
     var act = a.getAttribute("data-act"), id = a.getAttribute("data-id");
+    if (act === "stats-win") {
+      var we = findEntry(id);
+      if (we && we.table) openBoardStats(we);
+      return;
+    }
     if (act === "note-reset") { delete state.notes[id]; delete state.upg[id]; render(); return; }
     if (act === "note-save") {
       var se = findEntry(id);
