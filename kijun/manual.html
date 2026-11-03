@@ -3842,7 +3842,7 @@ main .wrap { padding-bottom: 88px; }
 
   /* ---------- standalone mode: save straight to GitHub instead of ART.publish ---------- */
   var GH_MODE = !(window.claude && typeof window.claude.use === "function");
-  var GH_OWNER = "jinheewhite", GH_REPO = "kijun", GH_PATH = "manual.html", GH_BRANCH = "master";
+  var GH_OWNER = "jinheewhite", GH_REPO = "kijun", GH_PATH = "kijun/manual.html", GH_BRANCH = "master";
   var GH_TOKEN_KEY = "dtm-gh-pat";
   if (GH_MODE) state.canWrite = true;
   function ghToken() { try { return localStorage.getItem(GH_TOKEN_KEY) || ""; } catch (e) { return ""; } }
