@@ -3846,12 +3846,19 @@ main .wrap { padding-bottom: 88px; }
   var GH_TOKEN_KEY = "dtm-gh-pat";
   if (GH_MODE) state.canWrite = true;
   function ghToken() { try { return localStorage.getItem(GH_TOKEN_KEY) || ""; } catch (e) { return ""; } }
+  function ghStorageOk() {
+    try { localStorage.setItem("dtm-gh-test", "1"); localStorage.removeItem("dtm-gh-test"); return true; } catch (e) { return false; }
+  }
   function promptGhToken(force) {
     var cur = ghToken();
     if (cur && !force) return cur;
     var t = window.prompt("GitHub Personal Access Token을 입력하세요 (repo 쓰기 권한 필요). 이 기기에만 저장됩니다.", "");
     if (t === null) return cur || "";
     t = t.trim();
+    if (!ghStorageOk()) {
+      toast("이 브라우저(시크릿 모드 등)에서는 저장이 안 돼서, 저장할 때마다 다시 물어봅니다.");
+      return t;
+    }
     try { if (t) localStorage.setItem(GH_TOKEN_KEY, t); else localStorage.removeItem(GH_TOKEN_KEY); } catch (e) {}
     return t;
   }
@@ -5204,7 +5211,10 @@ main .wrap { padding-bottom: 88px; }
   var ghsetEl = document.getElementById("ghset");
   if (ghsetEl) {
     ghsetEl.hidden = !GH_MODE;
-    ghsetEl.addEventListener("click", function () { promptGhToken(true); });
+    ghsetEl.addEventListener("click", function () {
+      var t = promptGhToken(true);
+      toast(t ? "토큰이 저장되었습니다." : "토큰 입력이 취소되었습니다.");
+    });
   }
 
   listEl.addEventListener("click", function (ev) {
