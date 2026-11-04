@@ -316,6 +316,7 @@ footer p { margin: 0; }
 .tbl td:first-child { font-weight: 600; min-width: 7.5em; }
 .tbl td.wired { color: var(--s-check); font-weight: 700; }
 .tbl td .winold { color: var(--s-check); font-weight: 700; }
+.tbl td .ezboard { color: var(--s-info); font-weight: 700; }
 .tbl tfoot td { background: var(--memo); white-space: nowrap; }
 .tbl tfoot td:first-child { font-size: 12px; font-weight: 600; letter-spacing: .04em; color: var(--muted); }
 .tbl tfoot tr.first td { border-top: 2px solid var(--line); }
@@ -4678,6 +4679,7 @@ main .wrap { padding-bottom: 88px; }
           var wired = cols[j] === "유선/무선" && String(c || "").trim() === "유선";
           var cellHtml = rich(c, ts);
           if (/win10/i.test(String(c || ""))) cellHtml = cellHtml.replace(/win10/gi, '<span class="winold">$&</span>');
+          if (String(c || "").trim() === "이지칠판") cellHtml = cellHtml.replace(/이지칠판/g, '<span class="ezboard">$&</span>');
           cells += "<td" + (wired ? ' class="wired"' : "") + ">" + cellHtml + "</td>";
         }
       }
