@@ -1020,19 +1020,25 @@ main .wrap { padding-bottom: 88px; }
         setCell(statTotalRow, sc + 3, st.total, { bold: true });
         setCell(statTotalRow, sc + 4, "");
 
-        var line = statsLine(st);
-        var bottom = Math.max(totalRow, statTotalRow);
-        var lineRow = statTotalRow + 2;
-        if (line) {
-          setCell(lineRow, sc, line, { border: false, center: false, width: false });
-          ws.mergeCells(lineRow, sc, lineRow, sc + 4);
-          ws.getCell(lineRow, sc).alignment = { horizontal: "left", vertical: "top", wrapText: true };
-          ws.getRow(lineRow).height = 40;
-        }
+        var sumRows = [["일반교실", st.gen + "곳"], ["특수교실", st.spec + "곳"]];
+        st.wins.forEach(function (w) { sumRows.push([w[0], w[1] + "대" + (w[0] === "윈도우 10" ? " (업그레이드 필요)" : "")]); });
+        if (st.hdmi > -1) sumRows.push(["HDMI로 PC·노트북 연결", st.hdmi + "곳"]);
+        if (st.wired.length) sumRows.push(["유선 연결", st.wired.join(", ")]);
+        var sumEnd = statTotalRow;
+        sumRows.forEach(function (r, i) {
+          var rr = statTotalRow + 1 + i;
+          setCell(rr, sc, r[0]);
+          ws.mergeCells(rr, sc, rr, sc + 1);
+          setCell(rr, sc + 2, r[1], { center: false });
+          ws.mergeCells(rr, sc + 2, rr, sc + 4);
+          sumEnd = rr;
+        });
+
+        var bottom = Math.max(totalRow, sumEnd);
 
         var memo = (e.memo || []).filter(function (m) { return str(m).trim(); });
         if (memo.length) {
-          var memoStart = bottom + (line ? 4 : 2);
+          var memoStart = bottom + 2;
           setCell(memoStart, 1, "메모", { bold: true, border: false, center: false, width: false });
           memo.forEach(function (m, k) { setCell(memoStart + 1 + k, 1, (k + 1) + ". " + m, { border: false, center: false, width: false }); });
         }
@@ -1040,7 +1046,7 @@ main .wrap { padding-bottom: 88px; }
           fitToPage: false, scale: 100, orientation: "portrait",
           margins: { left: 0.31496062992125984, right: 0.31496062992125984, top: 0.5511811023622047, bottom: 0.7480314960629921, header: 0, footer: 0 },
           showGridLines: false, showRowColHeaders: false, horizontalCentered: true,
-          printArea: "A1:" + colLetter(sc + 4) + Math.max(totalRow, line ? lineRow : bottom)
+          printArea: "A1:" + colLetter(sc + 4) + bottom
         };
       } else {
         if (cols.length) cols.forEach(function (c, j) { setCell(1, j + 1, c, { bold: true }); });
