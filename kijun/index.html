@@ -71,6 +71,8 @@ body::before {
 /* Title block */
 .top .wrap { padding-block: 22px 6px; display: grid; gap: 6px; }
 .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: .06em; color: var(--muted); margin: 0; }
+.h1row { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.notelink { text-decoration: none; justify-self: start; }
 .ghset { justify-self: start; }
 h1 {
   font-family: var(--f-display); font-weight: 400; font-size: clamp(30px, 8vw, 40px);
@@ -3727,7 +3729,8 @@ main .wrap { padding-bottom: 88px; }
   var SHELL =
     '<header class="top"><div class="wrap">' +
       '<p class="eyebrow">전주기전여자고등학교 · 디지털튜터</p>' +
-      '<h1>문제해결 매뉴얼</h1>' +
+      '<div class="h1row"><h1>문제해결 매뉴얼</h1>' +
+        '<a class="act notelink" href="https://jinheewhite.github.io/note/" target="_blank" rel="noopener">판서노트 ↗</a></div>' +
       '<button type="button" id="ghset" class="act ghset" hidden>⚙ GitHub 연결</button>' +
     '</div></header>' +
     '<div class="bar"><div class="wrap">' +
