@@ -1284,7 +1284,7 @@ main .wrap { padding-bottom: 88px; }
       co: cols.indexOf("전자칠판"),
       and: colOf(cols, /^(안드로이드|android)/i),
       ops: colOf(cols, /^ops$/i),
-      pc: cols.indexOf("PC"),
+      pc: cols.indexOf("PC") > -1 ? cols.indexOf("PC") : cols.indexOf("데스크탑"),
       wire: colOf(cols, /^(유선\/무선|유\/무선|유무선)$/)
     };
   }
