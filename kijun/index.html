@@ -955,6 +955,11 @@ main .wrap { padding-bottom: 88px; }
   function today8() { var d = new Date(); return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); }
   var XL_BORDER = { top: { style: "thin" }, bottom: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" } };
   var XL_CENTER = { horizontal: "center", vertical: "middle" };
+  function colLetter(n) {
+    var s = "";
+    while (n > 0) { var m = (n - 1) % 26; s = String.fromCharCode(65 + m) + s; n = Math.floor((n - 1) / 26); }
+    return s;
+  }
   // 엑셀 받기: 지금 표(저장 전 고친 비고·업그레이드 포함)로 만든다. 전자칠판 표는 원래 엑셀과 같은 모양.
   function exportTable(e) {
     var t = (state.tableEdit === e.id && state.tableDraft) ? (function () { var x = pendingTable(e); x.rows = state.tableDraft.map(function (r) { return r.slice(); }); return x; })() : pendingTable(e);
@@ -973,7 +978,7 @@ main .wrap { padding-bottom: 88px; }
         if (opts.bold) cell.font = { bold: true };
         if (opts.center !== false) cell.alignment = XL_CENTER;
         if (opts.border !== false) cell.border = XL_BORDER;
-        var w = textEm(v) + 2;
+        var w = textEm(v) * 2 + 2;
         if (!widths[c] || w > widths[c]) widths[c] = w;
         return cell;
       }
@@ -1021,7 +1026,10 @@ main .wrap { padding-bottom: 88px; }
           setCell(memoStart, 1, "메모", { bold: true, border: false, center: false });
           memo.forEach(function (m, k) { setCell(memoStart + 1 + k, 1, (k + 1) + ". " + m, { border: false, center: false }); });
         }
-        ws.pageSetup = { fitToPage: true, fitToWidth: 1, fitToHeight: 1, orientation: "landscape" };
+        ws.pageSetup = {
+          fitToPage: true, fitToWidth: 1, fitToHeight: 1, orientation: "portrait",
+          printArea: "A1:" + colLetter(ncols) + totalRow
+        };
       } else {
         if (cols.length) cols.forEach(function (c, j) { setCell(1, j + 1, c, { bold: true }); });
         (t.rows || []).forEach(function (r, i) {
