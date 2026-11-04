@@ -314,9 +314,9 @@ footer p { margin: 0; }
 }
 .tbl td { padding: 8px 10px; border-top: 1px solid var(--line); vertical-align: top; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
 .tbl td:first-child { font-weight: 600; min-width: 7.5em; }
-.tbl td.wired { color: var(--s-check); font-weight: 700; }
-.tbl td .winold { color: var(--s-check); font-weight: 700; }
-.tbl td .ezboard { color: var(--s-info); font-weight: 700; }
+.wired, .winold, .ezboard { font-weight: 700; }
+.wired, .winold { color: var(--s-check); }
+.ezboard { color: var(--s-info); }
 .tbl tfoot td { background: var(--memo); white-space: nowrap; }
 .tbl tfoot td:first-child { font-size: 12px; font-weight: 600; letter-spacing: .04em; color: var(--muted); }
 .tbl tfoot tr.first td { border-top: 2px solid var(--line); }
@@ -3901,6 +3901,16 @@ main .wrap { padding-bottom: 88px; }
       return i % 2 ? "<code>" + h + "</code>" : h;
     }).join("");
   }
+  // 특정 칸 값은 눈에 띄게 강조한다: 유선 연결, win10(업그레이드 필요), 이지칠판 모델.
+  // 표 그리드·교실 관리 패널 양쪽에서 같이 쓴다.
+  function flagCell(colName, raw, ts) {
+    var s = String(raw == null ? "" : raw);
+    var html = rich(raw, ts || []);
+    if (colName === "유선/무선" && s.trim() === "유선") return '<span class="wired">' + html + "</span>";
+    if (/win10/i.test(s)) html = html.replace(/win10/gi, '<span class="winold">$&</span>');
+    if (s.trim() === "이지칠판") html = html.replace(/이지칠판/g, '<span class="ezboard">$&</span>');
+    return html;
+  }
   function hay(e) {
     return [CAT_LABEL[e.cat], STATUS[e.status], e.symptom, e.device, (e.prep || []).join(" "),
       (e.steps || []).join(" "), (e.memo || []).join(" "),
@@ -4558,7 +4568,7 @@ main .wrap { padding-bottom: 88px; }
         if (j === 0) return "";
         var v = cellv(row, j);
         if (j === nc) { var nv = noteVal(e.id, ri); if (nv !== undefined) v = nv; }
-        return "<div><dt>" + esc(h) + "</dt><dd>" + esc(v || "–") + "</dd></div>";
+        return "<div><dt>" + esc(h) + "</dt><dd>" + (v ? flagCell(h, v, []) : "–") + "</dd></div>";
       }).join("") + "</dl>";
     }
     var as = !row ? null : board ? asContact(cellv(row, boardCols(cols).co)) : (e.contact && e.contact.num ? { who: e.contact.who || "연락처", num: e.contact.num } : null);
@@ -4676,11 +4686,7 @@ main .wrap { padding-bottom: 88px; }
         } else if (rooms && j === 0) {
           cells += '<td><button type="button" class="roomlink" data-act="room" data-name="' + esc(name) + '" title="' + esc(name) + ' 교실 관리">' + rich(c, ts) + "</button></td>";
         } else {
-          var wired = cols[j] === "유선/무선" && String(c || "").trim() === "유선";
-          var cellHtml = rich(c, ts);
-          if (/win10/i.test(String(c || ""))) cellHtml = cellHtml.replace(/win10/gi, '<span class="winold">$&</span>');
-          if (String(c || "").trim() === "이지칠판") cellHtml = cellHtml.replace(/이지칠판/g, '<span class="ezboard">$&</span>');
-          cells += "<td" + (wired ? ' class="wired"' : "") + ">" + cellHtml + "</td>";
+          cells += "<td>" + flagCell(cols[j], c, ts) + "</td>";
         }
       }
       if (rooms) {
