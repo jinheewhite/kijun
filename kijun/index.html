@@ -819,7 +819,7 @@ main .wrap { padding-bottom: 88px; }
   function flagCell(colName, raw, ts) {
     var s = String(raw == null ? "" : raw);
     var html = rich(raw, ts || []);
-    if (colName === "유선/무선" && s.trim() === "유선") return '<span class="wired">' + html + "</span>";
+    if ((colName === "유선/무선" || colName === "유/무선") && s.trim() === "유선") return '<span class="wired">' + html + "</span>";
     if (/win10/i.test(s)) html = html.replace(/win10/gi, '<span class="winold">$&</span>');
     if (s.trim() === "이지칠판") html = html.replace(/이지칠판/g, '<span class="ezboard">$&</span>');
     return html;
@@ -978,16 +978,18 @@ main .wrap { padding-bottom: 88px; }
         if (opts.bold) cell.font = { bold: true };
         if (opts.center !== false) cell.alignment = XL_CENTER;
         if (opts.border !== false) cell.border = XL_BORDER;
-        var w = textEm(v) * 2 + 2;
-        if (!widths[c] || w > widths[c]) widths[c] = w;
+        if (opts.width !== false) {
+          var w = textEm(v) * 2 + 2;
+          if (!widths[c] || w > widths[c]) widths[c] = w;
+        }
         return cell;
       }
       if (board) {
         var rows = (t.rows || []).filter(function (r) { return r.some(function (c) { return str(c).trim(); }); });
         var ncols = cols.length + 1; // No. + cols
-        setCell(1, 1, "기전여고 전자칠판 현황", { bold: true, border: false });
+        setCell(1, 1, "기전여고 전자칠판 현황", { bold: true, border: false, width: false });
         ws.mergeCells(1, 1, 1, ncols);
-        setCell(2, 1, "받은 날 " + today8(), { border: false });
+        setCell(2, 1, "받은 날 " + today8(), { border: false, width: false });
         ws.mergeCells(2, 1, 2, ncols);
         setCell(3, 1, "No.", { bold: true });
         cols.forEach(function (c, j) { setCell(3, j + 2, c, { bold: true }); });
@@ -1003,6 +1005,8 @@ main .wrap { padding-bottom: 88px; }
 
         var st = boardStats(t, rows);
         var sc = ncols + 2;
+        setCell(1, sc, "기전여고 전자칠판 통계", { bold: true, border: false, width: false });
+        ws.mergeCells(1, sc, 1, sc + 4);
         ["회사", "안드로이드", "OPS", "대수", "업그레이드 가능"].forEach(function (h, j) { setCell(3, sc + j, h, { bold: true }); });
         st.groups.forEach(function (x, k) {
           var rr = 4 + k;
@@ -1018,17 +1022,25 @@ main .wrap { padding-bottom: 88px; }
 
         var line = statsLine(st);
         var bottom = Math.max(totalRow, statTotalRow);
-        if (line) setCell(bottom + 2, sc, line, { border: false, center: false });
+        var lineRow = statTotalRow + 2;
+        if (line) {
+          setCell(lineRow, sc, line, { border: false, center: false, width: false });
+          ws.mergeCells(lineRow, sc, lineRow, sc + 4);
+          ws.getCell(lineRow, sc).alignment = { horizontal: "left", vertical: "top", wrapText: true };
+          ws.getRow(lineRow).height = 40;
+        }
 
         var memo = (e.memo || []).filter(function (m) { return str(m).trim(); });
         if (memo.length) {
           var memoStart = bottom + (line ? 4 : 2);
-          setCell(memoStart, 1, "메모", { bold: true, border: false, center: false });
-          memo.forEach(function (m, k) { setCell(memoStart + 1 + k, 1, (k + 1) + ". " + m, { border: false, center: false }); });
+          setCell(memoStart, 1, "메모", { bold: true, border: false, center: false, width: false });
+          memo.forEach(function (m, k) { setCell(memoStart + 1 + k, 1, (k + 1) + ". " + m, { border: false, center: false, width: false }); });
         }
         ws.pageSetup = {
-          fitToPage: true, fitToWidth: 1, fitToHeight: 1, orientation: "portrait",
-          printArea: "A1:" + colLetter(ncols) + totalRow
+          fitToPage: false, scale: 100, orientation: "portrait",
+          margins: { left: 0.31496062992125984, right: 0.31496062992125984, top: 0.5511811023622047, bottom: 0.7480314960629921, header: 0, footer: 0 },
+          showGridLines: false, showRowColHeaders: false, horizontalCentered: true,
+          printArea: "A1:" + colLetter(sc + 4) + Math.max(totalRow, line ? lineRow : bottom)
         };
       } else {
         if (cols.length) cols.forEach(function (c, j) { setCell(1, j + 1, c, { bold: true }); });
@@ -1273,7 +1285,7 @@ main .wrap { padding-bottom: 88px; }
       and: colOf(cols, /^(안드로이드|android)/i),
       ops: colOf(cols, /^ops$/i),
       pc: cols.indexOf("PC"),
-      wire: colOf(cols, /^(유선\/무선|유무선)$/)
+      wire: colOf(cols, /^(유선\/무선|유\/무선|유무선)$/)
     };
   }
   // OPS·PC 칸은 "O·win11"처럼 기기유무와 윈도우 버전을 함께 적으니, 모델 묶기·업그레이드 판단에는 유무 글자만 쓴다
@@ -1323,7 +1335,9 @@ main .wrap { padding-bottom: 88px; }
     };
   }
   function statsLine(st) {
-    var bits = ["일반교실 " + st.gen + "곳", "특수교실 " + st.spec + "곳"].concat(st.wins.map(function (w) { return w[0] + " " + w[1] + "대"; }));
+    var bits = ["일반교실 " + st.gen + "곳", "특수교실 " + st.spec + "곳"].concat(st.wins.map(function (w) {
+      return w[0] + " " + w[1] + "대" + (w[0] === "윈도우 10" ? " (업그레이드 필요)" : "");
+    }));
     if (st.hdmi > -1) bits.push("HDMI로 PC·노트북 연결 " + st.hdmi + "곳");
     if (st.wired.length) bits.push("유선 연결 " + st.wired.join(", "));
     return bits.join(" · ");
