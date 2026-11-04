@@ -3857,6 +3857,19 @@ main .wrap { padding-bottom: 88px; }
   var GH_OWNER = "jinheewhite", GH_REPO = "kijun", GH_PATH = "kijun/index.html", GH_BRANCH = "master";
   var GH_TOKEN_KEY = "dtm-gh-pat";
   if (GH_MODE) state.canWrite = true;
+  if (GH_MODE) {
+    DL = { save: function (opts) {
+      return new Promise(function (resolve) {
+        var url = URL.createObjectURL(opts.data);
+        var a = document.createElement("a");
+        a.href = url; a.download = opts.filename;
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+        resolve();
+      });
+    } };
+    state.canDownload = true;
+  }
   function ghToken() { try { return localStorage.getItem(GH_TOKEN_KEY) || ""; } catch (e) { return ""; } }
   function ghStorageOk() {
     try { localStorage.setItem("dtm-gh-test", "1"); localStorage.removeItem("dtm-gh-test"); return true; } catch (e) { return false; }
