@@ -2,9 +2,41 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>botem.com</title>
+<style>
+  html,body{height:100%;margin:0}
+  body{
+    display:flex;align-items:center;justify-content:center;
+    font-family:-apple-system,BlinkMacSystemFont,"Malgun Gothic",sans-serif;
+    background:linear-gradient(160deg,#eef2f8 0%,#e4ecf7 50%,#dfe8f5 100%);
+    color:#2c3542;
+  }
+  .card{text-align:center;padding:40px}
+  .icon{width:140px;height:140px;margin:0 auto 28px}
+  h1{font-size:22px;font-weight:700;margin:0 0 10px;letter-spacing:-.2px}
+  p{font-size:15px;color:#6b7684;margin:0}
+</style>
 </head>
-<body style="font-family:sans-serif;text-align:center;padding:100px 20px;">
-<p>이 페이지는 점검중입니다.</p>
+<body>
+  <div class="card">
+    <svg class="icon" viewBox="0 0 140 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="70" cy="70" r="68" fill="#ffffff" stroke="#d7e0ec" stroke-width="2"/>
+      <g transform="translate(70 70)">
+        <circle r="30" fill="#eef2f8"/>
+        <g stroke="#7b8ba3" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" fill="none">
+          <path d="M-14 6 L-2 -6 a4.2 4.2 0 0 1 6 0 l2 2 a4.2 4.2 0 0 1 0 6 L-6 14 a6 6 0 0 1 -8 0 l-2 -2 a6 6 0 0 1 0 -8 Z" fill="#ffd7a8"/>
+          <path d="M6 -14 a8.5 8.5 0 1 1 0 .1" fill="#c7d3e4" stroke="none"/>
+        </g>
+        <circle r="8" cx="10" cy="-10" fill="#c7d3e4"/>
+        <path d="M10 -16 v3 M16 -10 h-3 M10 -4 v-3 M4 -10 h3" stroke="#aebbcf" stroke-width="2.6" stroke-linecap="round"/>
+      </g>
+      <g stroke="#b7c2d4" stroke-width="2.4" stroke-linecap="round">
+        <path d="M30 108 q40 18 80 0"/>
+      </g>
+    </svg>
+    <h1>점검중입니다</h1>
+    <p>잠시 후 다시 찾아주세요.</p>
+  </div>
 </body>
 </html>
