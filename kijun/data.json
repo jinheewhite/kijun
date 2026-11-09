@@ -1,5 +1,18 @@
 [
  {
+  "id": "e-mw8inq16",
+  "cat": "board",
+  "status": "done",
+  "symptom": "hdmi2에서 경건회가 안나올때",
+  "steps": [
+   "채널을 아이들이 수정해서 그러함.",
+   "셋텁박스의 채널을 14-1로 고정하면 경건회가 나옴."
+  ],
+  "checked": "2026-11-09",
+  "prep": [],
+  "memo": []
+ },
+ {
   "id": "cabinet-passwords",
   "cat": "cabinet",
   "status": "info",
