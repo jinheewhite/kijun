@@ -4,6 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>botem.com</title>
+<script>
+  // 대소문자·공백이 달라도 앱으로 바로 연결 (예: /Kijun, /KIJUN/, /NoteAll)
+  (function () {
+    var p = decodeURIComponent(location.pathname).trim().toLowerCase().replace(/\s+/g, "");
+    var m = p.match(/^\/(kijun|noteall|note)(\/.*)?$/);
+    if (m) location.replace("/" + m[1] + "/" + location.search + location.hash);
+  })();
+</script>
 <style>
   html,body{height:100%;margin:0}
   body{
