@@ -1,5 +1,45 @@
 [
  {
+  "id": "etc-claude-code-install",
+  "cat": "etc",
+  "status": "info",
+  "symptom": "Claude Code(클로드 코드) 설치 · 어느 폴더에서든 실행",
+  "device": "Windows 10/11 · PowerShell · WinGet · 유료 Claude 계정(Pro·Max 등) 필요",
+  "prep": [],
+  "steps": [
+   "시작 메뉴에서 PowerShell을 연다.",
+   "설치: `winget install Anthropic.ClaudeCode` 를 붙여넣고 Enter. 약관 동의를 물으면 Y.",
+   "어느 폴더에서든 실행되게 설정: `[Environment]::SetEnvironmentVariable(\"Path\", [Environment]::GetEnvironmentVariable(\"Path\",\"User\") + \";$env:LOCALAPPDATA\\Microsoft\\WinGet\\Links\", \"User\")`",
+   "PowerShell 창을 닫고 새로 열어 `claude --version` 으로 확인한다. 버전 번호가 나오면 성공.",
+   "작업할 폴더에서 `claude` 를 입력해 실행한다. 처음에는 브라우저가 열리면 Claude 계정으로 로그인한다."
+  ],
+  "memo": [
+   "탐색기에서 폴더 빈 곳 우클릭 → [터미널에서 열기] → `claude` 로 바로 실행할 수 있다.",
+   "WinGet으로 설치하면 자동 업데이트가 안 된다. 가끔 Claude Code를 끈 상태에서 `winget upgrade Anthropic.ClaudeCode` 를 실행한다.",
+   "`irm https://claude.ai/install.ps1 | iex` 방법은 잘 안 될 때가 있어 WinGet 방법을 쓴다.",
+   "`winget` 을 찾을 수 없다고 나오면 Microsoft Store에서 ‘앱 설치 관리자(App Installer)’를 설치/업데이트한다.",
+   "삭제: `winget uninstall Anthropic.ClaudeCode`"
+  ],
+  "keywords": [
+   "claude",
+   "claude code",
+   "클로드",
+   "클로드코드",
+   "클로드 코드",
+   "claudecode",
+   "설치",
+   "winget",
+   "윈겟",
+   "powershell",
+   "파워셸",
+   "path",
+   "환경변수",
+   "ai",
+   "인공지능"
+  ],
+  "checked": "2026-11-12"
+ },
+ {
   "id": "e-mw8inq16",
   "cat": "board",
   "status": "done",
