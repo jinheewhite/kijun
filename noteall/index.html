@@ -60,25 +60,24 @@
   .thumb.c3{background:linear-gradient(160deg,#20362b,#1e2b38)}
   .thumb.c4{background:linear-gradient(160deg,#352030,#1e2b38)}
 
-  /* ---- 다운로드 영역 ---- */
-  .promo{width:100%;max-width:860px;text-align:center;margin-top:34px}
-  .dl-btn{
-    display:inline-flex;align-items:center;justify-content:center;gap:8px;
-    padding:16px 34px;border-radius:14px;
-    background:var(--chalk);color:#1a1a12;
-    font-size:17px;font-weight:800;text-decoration:none;letter-spacing:.2px;
-    box-shadow:0 14px 34px rgba(245,213,71,.25);
-    transition:transform .15s ease, box-shadow .15s ease;
-  }
-  .dl-btn:hover{transform:translateY(-1px);box-shadow:0 18px 40px rgba(245,213,71,.35)}
-  .dl-btn:active{transform:translateY(0)}
-  .meta{margin-top:16px;font-size:12.5px;color:var(--text-dim)}
+  .meta{margin-top:10px;font-size:12.5px;color:var(--text-dim)}
   .meta a{color:var(--text-dim);text-decoration:underline}
 
-  /* ---- 맨 위 제목 ---- */
+  /* ---- 맨 위 제목 + 다운로드 ---- */
   .hero{width:100%;max-width:860px;text-align:center;margin-bottom:28px}
-  .hero h2{font-size:26px;font-weight:800;margin:0 0 8px;letter-spacing:-.2px}
+  .heroTop{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;margin-bottom:10px}
+  .hero h2{font-size:26px;font-weight:800;margin:0;letter-spacing:-.2px}
   .hero p{font-size:14.5px;color:var(--text-dim);margin:0;line-height:1.6}
+  .dl-btn-sm{
+    display:inline-flex;align-items:center;justify-content:center;gap:6px;
+    padding:10px 20px;border-radius:12px;
+    background:var(--chalk);color:#1a1a12;
+    font-size:14px;font-weight:800;text-decoration:none;letter-spacing:.2px;
+    box-shadow:0 8px 20px rgba(245,213,71,.25);
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .dl-btn-sm:hover{transform:translateY(-1px);box-shadow:0 10px 24px rgba(245,213,71,.35)}
+  .dl-btn-sm:active{transform:translateY(0)}
 
   /* ---- 사용법 3단계 도식 ---- */
   .steps{width:100%;max-width:860px;text-align:center;margin-top:40px}
@@ -98,8 +97,14 @@
 <body>
 
   <div class="hero">
-    <h2>기전판서앱</h2>
+    <div class="heroTop">
+      <h2>기전판서앱</h2>
+      <a class="dl-btn-sm" href="https://github.com/jinheewhite/noteall/releases/latest/download/noteall-Setup.exe">
+        ⬇ 다운로드 (Windows)
+      </a>
+    </div>
     <p>판서노트 + 파워포인트·한글·엑셀 불러오기<br>Windows 데스크톱 전자칠판 프로그램</p>
+    <div class="meta">설치 후 자동으로 업데이트됩니다</div>
   </div>
 
   <div class="preview" aria-hidden="true">
@@ -148,12 +153,6 @@
     </div>
   </div>
 
-  <div class="promo">
-    <a class="dl-btn" href="https://github.com/jinheewhite/noteall/releases/latest/download/noteall-Setup.exe">
-      ⬇ 다운로드 (Windows)
-    </a>
-    <div class="meta">설치 후 자동으로 업데이트됩니다</div>
-  </div>
 
 </body>
 </html>
