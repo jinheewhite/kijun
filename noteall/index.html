@@ -81,6 +81,20 @@
     background:var(--ink-2);border:1px solid var(--line);font-size:13.5px;color:var(--text-dim);
     margin-bottom:18px;max-width:860px;text-align:center}
   .tip b{color:var(--chalk);font-weight:700}
+
+  /* ---- 사용법 3단계 도식 ---- */
+  .steps{width:100%;max-width:860px;text-align:center;margin-top:40px}
+  .steps h2{font-size:17px;margin:0 0 4px;color:var(--chalk)}
+  .steps .ssub{font-size:13px;color:var(--text-dim);margin:0 0 20px}
+  .stepRow{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
+  .step{display:flex;flex-direction:column;align-items:center;gap:5px;width:170px;padding:16px 12px;
+    background:var(--ink-2);border:1px solid var(--line);border-radius:12px;text-align:center}
+  .step .sic{font-size:24px;width:48px;height:48px;display:flex;align-items:center;justify-content:center;
+    background:var(--ink-3);border-radius:50%}
+  .step b{font-size:13.5px}
+  .step span{font-size:12px;color:var(--text-dim);line-height:1.4}
+  .sarrow{font-size:20px;color:var(--chalk);opacity:.65}
+  @media(max-width:760px){.stepRow{flex-direction:column}.sarrow{transform:rotate(90deg)}}
 </style>
 </head>
 <body>
@@ -111,6 +125,30 @@
         <div class="thumb c2"><i>📊</i></div>
         <div class="thumb c3"><i>📝</i></div>
         <div class="thumb c4"><i>📈</i></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="steps">
+    <h2>판서노트, 이렇게 씁니다</h2>
+    <p class="ssub">PDF·파워포인트·한글·엑셀 자료를 불러와 전자칠판처럼 바로 판서하고, 끄면 그대로 저장됩니다.</p>
+    <div class="stepRow">
+      <div class="step">
+        <div class="sic">📄</div>
+        <b>① 자료 불러오기</b>
+        <span>PDF·PPT·한글·엑셀<br>그대로 불러오기</span>
+      </div>
+      <div class="sarrow">→</div>
+      <div class="step">
+        <div class="sic">✏️</div>
+        <b>② 칠판처럼 판서</b>
+        <span>펜·형광펜·지우개로<br>자료 위에 바로 쓰기</span>
+      </div>
+      <div class="sarrow">→</div>
+      <div class="step">
+        <div class="sic">💾</div>
+        <b>③ 자동 저장</b>
+        <span>다음에 열어도<br>판서가 그대로</span>
       </div>
     </div>
   </div>
