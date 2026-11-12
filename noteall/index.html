@@ -38,12 +38,17 @@
   .tabs span{padding:7px 14px;border-radius:7px;font-size:13px;color:var(--text-dim)}
   .tabs span.on{background:var(--ink-3);color:var(--chalk);font-weight:700}
 
-  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:0 0 22px}
-  @media(min-width:560px){.grid{grid-template-columns:repeat(2,160px);justify-content:center}}
-  .addcard{border:2px dashed var(--line);border-radius:12px;height:150px;
-    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
-    color:var(--text-dim);font-size:13px}
-  .addcard .ic{font-size:26px;color:var(--chalk);font-weight:800}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:0 0 22px}
+  @media(min-width:560px){.grid{grid-template-columns:repeat(3,140px);justify-content:center}}
+  .addcard{border:2px dashed var(--line);border-radius:12px;height:120px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;
+    color:var(--text-dim);font-size:12.5px;padding:0 6px;text-align:center}
+  .addcard .ic{font-size:24px;color:var(--chalk);font-weight:800}
+  .addcard .badge{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;
+    justify-content:center;font-size:14px;font-weight:800}
+  .addcard .badge.chrome{background:#fff;color:#4285f4}
+  .addcard .badge.naver{background:#03c75a;color:#fff}
+  .addcard .badge.youtube{background:#ff0033;color:#fff}
 
   .thumbs{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:12px;
     max-width:620px;margin:0 auto}
@@ -95,7 +100,11 @@
       </div>
       <div class="grid">
         <div class="addcard"><div class="ic">＋</div>PDF·그림 선택</div>
+        <div class="addcard"><div class="ic">📊</div>파워포인트·한글·엑셀 열기</div>
         <div class="addcard"><div class="ic">▥</div>칠판만 쓰기</div>
+        <div class="addcard"><div class="badge chrome">C</div>크롬 열기</div>
+        <div class="addcard"><div class="badge naver">N</div>네이버 열기</div>
+        <div class="addcard"><div class="badge youtube">▶</div>유튜브 열기</div>
       </div>
       <div class="thumbs">
         <div class="thumb c1"><i>📄</i></div>
