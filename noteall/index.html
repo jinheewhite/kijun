@@ -62,8 +62,6 @@
 
   /* ---- 다운로드 영역 ---- */
   .promo{width:100%;max-width:860px;text-align:center;margin-top:34px}
-  .promo h2{font-size:22px;font-weight:800;margin:0 0 8px;letter-spacing:-.2px}
-  .promo p{font-size:14.5px;color:var(--text-dim);margin:0 0 26px;line-height:1.6}
   .dl-btn{
     display:inline-flex;align-items:center;justify-content:center;gap:8px;
     padding:16px 34px;border-radius:14px;
@@ -77,10 +75,10 @@
   .meta{margin-top:16px;font-size:12.5px;color:var(--text-dim)}
   .meta a{color:var(--text-dim);text-decoration:underline}
 
-  .tip{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:999px;
-    background:var(--ink-2);border:1px solid var(--line);font-size:13.5px;color:var(--text-dim);
-    margin-bottom:18px;max-width:860px;text-align:center}
-  .tip b{color:var(--chalk);font-weight:700}
+  /* ---- 맨 위 제목 ---- */
+  .hero{width:100%;max-width:860px;text-align:center;margin-bottom:28px}
+  .hero h2{font-size:26px;font-weight:800;margin:0 0 8px;letter-spacing:-.2px}
+  .hero p{font-size:14.5px;color:var(--text-dim);margin:0;line-height:1.6}
 
   /* ---- 사용법 3단계 도식 ---- */
   .steps{width:100%;max-width:860px;text-align:center;margin-top:40px}
@@ -99,7 +97,10 @@
 </head>
 <body>
 
-  <div class="tip">💡 <b>한글·파워포인트·엑셀·PDF</b> 파일을 그대로 불러와 판서하고, <b>크롬</b>으로 인터넷도 겹쳐 쓸 수 있어요</div>
+  <div class="hero">
+    <h2>기전판서앱</h2>
+    <p>판서노트 + 파워포인트·한글·엑셀 불러오기<br>Windows 데스크톱 전자칠판 프로그램</p>
+  </div>
 
   <div class="preview" aria-hidden="true">
     <div class="bar">
@@ -119,12 +120,6 @@
         <div class="addcard"><div class="badge chrome">C</div>크롬 열기</div>
         <div class="addcard"><div class="badge naver">N</div>네이버 열기</div>
         <div class="addcard"><div class="badge youtube">▶</div>유튜브 열기</div>
-      </div>
-      <div class="thumbs">
-        <div class="thumb c1"><i>📄</i></div>
-        <div class="thumb c2"><i>📊</i></div>
-        <div class="thumb c3"><i>📝</i></div>
-        <div class="thumb c4"><i>📈</i></div>
       </div>
     </div>
   </div>
@@ -154,8 +149,6 @@
   </div>
 
   <div class="promo">
-    <h2>기전판서앱</h2>
-    <p>판서노트 + 파워포인트·한글·엑셀 불러오기<br>Windows 데스크톱 전자칠판 프로그램</p>
     <a class="dl-btn" href="https://github.com/jinheewhite/noteall/releases/latest/download/noteall-Setup.exe">
       ⬇ 다운로드 (Windows)
     </a>
