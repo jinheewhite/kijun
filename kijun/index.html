@@ -281,6 +281,14 @@ footer p { margin: 0; }
 }
 .editor textarea { resize: vertical; }
 .editor input:focus, .editor select:focus, .editor textarea:focus { outline: 2px solid var(--accent); outline-offset: 0; border-color: var(--accent); }
+.stepwrap { position: relative; }
+.stepwrap textarea { padding-left: 42px; }
+.stepnums {
+  position: absolute; left: 1px; top: 1px; bottom: 1px; width: 34px;
+  overflow: hidden; pointer-events: none; user-select: none;
+  font: 400 16px/1.45 var(--f-body); color: var(--muted); text-align: right; white-space: pre;
+  padding: 9px 6px 9px 0; border-right: 1px solid var(--line); border-radius: 8px 0 0 8px; background: var(--memo);
+}
 .row2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 .row3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; }
 .editor .chk {
@@ -1789,6 +1797,15 @@ main .wrap { padding-bottom: 88px; }
   function blankEntry() {
     return { id: NEW, cat: state.cat !== "all" ? state.cat : "etc", status: "done", symptom: "", steps: [], checked: today() };
   }
+  // 보기 화면의 1,2,3… 번호와 비슷하게, 수정 화면 textarea에도 줄 번호를 보여준다
+  function syncStepNums() {
+    var ta = document.getElementById("f-steps"), g = document.getElementById("f-steps-nums");
+    if (!ta || !g) return;
+    var n = ta.value.split("\n").length, nums = [];
+    for (var i = 1; i <= n; i++) nums.push(i);
+    g.textContent = nums.join("\n");
+    g.scrollTop = ta.scrollTop;
+  }
   function readForm() {
     var f = document.getElementById("editor");
     if (!f) return null;
@@ -1821,7 +1838,9 @@ main .wrap { padding-bottom: 88px; }
         '<label for="f-status">상태<select id="f-status">' + opt(stOpts, d.status) + "</select></label>" +
       "</div>" +
       '<label for="f-symptom">제목 (증상)<input type="text" id="f-symptom" value="' + esc(d.symptom) + '" placeholder="예: 3학년 2반 전자칠판 소리가 안 날 때"></label>' +
-      '<label for="f-steps">내용 · 해결 순서 <small>한 줄에 한 단계</small><textarea id="f-steps" rows="7">' + esc(d.steps) + "</textarea></label>" +
+      '<label for="f-steps">내용 · 해결 순서 <small>한 줄에 한 단계</small>' +
+        '<div class="stepwrap"><div class="stepnums" id="f-steps-nums" aria-hidden="true"></div>' +
+        '<textarea id="f-steps" rows="7">' + esc(d.steps) + "</textarea></div></label>" +
       '<div class="sec"><p class="label">사진 · 파일 첨부</p>' +
         (ASSETS
           ? '<div class="drop" id="f-drop" tabindex="0" aria-label="첨부 칸: 캡처한 그림을 붙여 넣거나 파일을 끌어다 놓으세요">' +
@@ -2017,6 +2036,7 @@ main .wrap { padding-bottom: 88px; }
 
     if (editE) {
       listEl.innerHTML = editorHTML(editE);
+      syncStepNums();
     } else if (openE && !state.reorder) {
       listEl.innerHTML = detailHTML(openE, ts);
     } else {
@@ -2460,10 +2480,15 @@ main .wrap { padding-bottom: 88px; }
     addFiles(t.files, false);
     try { t.value = ""; } catch (e) {}
   });
+  // scroll 이벤트는 버블링되지 않아서 capture 단계에서 잡는다
+  listEl.addEventListener("scroll", function (ev) {
+    if (ev.target && ev.target.id === "f-steps") syncStepNums();
+  }, true);
 
   // 비고 칸 바로 고치기: 입력할 때마다 표시만 바꾸고, 저장은 [비고 저장]으로 한 번에
   listEl.addEventListener("input", function (ev) {
     var t = ev.target;
+    if (t && t.id === "f-steps") { syncStepNums(); return; }
     // 표 고치기 중: 통계를 바로 다시 계산
     if (t && t.closest && t.closest(".tedit") && state.tableEdit) {
       readTableDraft();
