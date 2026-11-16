@@ -1937,8 +1937,12 @@ main .wrap { padding-bottom: 88px; }
       }
       ENTRIES = next;
       state.saving = false;
+      var finalOpen = openAfter === undefined ? state.openId : openAfter;
+      state.editing = null; state.draft = null; state.confirmDel = null;
+      endAtt(false);
       toast(doneMsg + " GitHub에 저장했습니다.");
-      render(); stats();
+      if (finalOpen && findEntry(finalOpen)) { openEntry(finalOpen); } else { state.openId = null; syncHash(); render(); }
+      stats();
     }, function (err) {
       state.saving = false;
       var code = err && err.code;
