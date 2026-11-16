@@ -11,7 +11,7 @@
    "- 설치1 : `winget install Anthropic.ClaudeCode` => Enter. 약관동의 -> Y.",
    "- 설치2 : `[Environment]::SetEnvironmentVariable(\"Path\", [Environment]::GetEnvironmentVariable(\"Path\",\"User\") + \";$env:LOCALAPPDATA\\Microsoft\\WinGet\\Links\", \"User\")`",
    "- 창닫기",
-   "확인",
+   "확인하기",
    "- PowerShell 창",
    "- `claude --version` -> 버전 번호가 나오면 성공."
   ],
