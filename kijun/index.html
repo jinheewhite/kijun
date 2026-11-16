@@ -659,7 +659,7 @@ main .wrap { padding-bottom: 88px; }
       '<p class="eyebrow">전주기전여자고등학교 · 디지털튜터</p>' +
       '<div class="h1row"><h1>문제해결 매뉴얼</h1>' +
         '<a class="act notelink" href="https://jinheewhite.github.io/note/" target="_blank" rel="noopener">판서노트 ↗</a></div>' +
-      '<button type="button" id="ghset" class="act ghset" hidden>⚙ GitHub 연결</button>' +
+      '<button type="button" id="ghset" class="act ghset" hidden>⚙ 편집 비밀번호</button>' +
     '</div></header>' +
     '<div class="bar"><div class="wrap">' +
       '<label class="search" for="q">' + SEARCH_SVG +
@@ -692,10 +692,11 @@ main .wrap { padding-bottom: 88px; }
   var ART = null;
   var DL = null;
 
-  /* ---------- standalone mode: save straight to GitHub instead of ART.publish ---------- */
+  /* ---------- standalone mode: save via the kijun-edit Cloudflare Worker instead of ART.publish ---------- */
   var GH_MODE = !(window.claude && typeof window.claude.use === "function");
-  var GH_OWNER = "jinheewhite", GH_REPO = "kijun", GH_DATA_PATH = "kijun/data.json", GH_BRANCH = "master";
-  var GH_TOKEN_KEY = "dtm-gh-pat";
+  var GH_DATA_PATH = "kijun/data.json";
+  var GH_WORKER_URL = "https://floral-recipe-81b0.botem.workers.dev/";
+  var GH_TOKEN_KEY = "dtm-edit-pw";
   if (GH_MODE) state.canWrite = true;
   if (GH_MODE) {
     DL = { save: function (opts) {
@@ -710,62 +711,37 @@ main .wrap { padding-bottom: 88px; }
     } };
     state.canDownload = true;
   }
-  function ghToken() { try { return localStorage.getItem(GH_TOKEN_KEY) || ""; } catch (e) { return ""; } }
+  function ghPw() { try { return localStorage.getItem(GH_TOKEN_KEY) || ""; } catch (e) { return ""; } }
   function ghStorageOk() {
     try { localStorage.setItem("dtm-gh-test", "1"); localStorage.removeItem("dtm-gh-test"); return true; } catch (e) { return false; }
   }
   function promptGhToken(force) {
-    var cur = ghToken();
+    var cur = ghPw();
     if (cur && !force) return cur;
-    var t = window.prompt("GitHub Personal Access Token을 입력하세요 (repo 쓰기 권한 필요). 이 기기에만 저장됩니다.", "");
-    if (t === null) return cur || "";
-    t = t.trim();
+    var p = window.prompt("편집 비밀번호를 입력하세요. 이 기기에만 저장됩니다.", "");
+    if (p === null) return cur || "";
+    p = p.trim();
     if (!ghStorageOk()) {
       toast("이 브라우저(시크릿 모드 등)에서는 저장이 안 돼서, 저장할 때마다 다시 물어봅니다.");
-      return t;
+      return p;
     }
-    try { if (t) localStorage.setItem(GH_TOKEN_KEY, t); else localStorage.removeItem(GH_TOKEN_KEY); } catch (e) {}
-    return t;
-  }
-  function ghB64(str) {
-    var bytes = new TextEncoder().encode(str), bin = "";
-    for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
-    return btoa(bin);
-  }
-  function ghApi(path) {
-    return "https://api.github.com/repos/" + GH_OWNER + "/" + GH_REPO + "/contents/" + encodeURIComponent(path).replace(/%2F/g, "/");
-  }
-  function ghHeaders(token) {
-    return { Authorization: "Bearer " + token, Accept: "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28" };
+    try { if (p) localStorage.setItem(GH_TOKEN_KEY, p); else localStorage.removeItem(GH_TOKEN_KEY); } catch (e) {}
+    return p;
   }
   function ghPublish(path, content) {
-    var token = promptGhToken(false);
-    if (!token) return Promise.reject({ code: "gh_auth" });
-    var url = ghApi(path) + "?ref=" + encodeURIComponent(GH_BRANCH);
-    return fetch(url, { headers: ghHeaders(token) }).then(function (r) {
-      if (r.status === 404) return null;
-      if (r.status === 401 || r.status === 403) return Promise.reject({ code: "gh_auth" });
-      if (!r.ok) return Promise.reject({ code: "gh_error" });
-      return r.json();
-    }).then(function (cur) {
-      var body = {
-        message: "매뉴얼 업데이트 (" + new Date().toISOString() + ")",
-        content: ghB64(content),
-        branch: GH_BRANCH
-      };
-      if (cur && cur.sha) body.sha = cur.sha;
-      return fetch(ghApi(path), {
-        method: "PUT",
-        headers: Object.assign({ "Content-Type": "application/json" }, ghHeaders(token)),
-        body: JSON.stringify(body)
-      }).then(function (r) {
-        if (r.status === 401 || r.status === 403) return Promise.reject({ code: "gh_auth" });
-        if (r.status === 409) return Promise.reject({ code: "conflict" });
-        if (!r.ok) return r.json().catch(function () { return {}; }).then(function (e) {
-          return Promise.reject({ code: "gh_error", message: e && e.message });
-        });
-        return r.json();
+    var pw = promptGhToken(false);
+    if (!pw) return Promise.reject({ code: "gh_auth" });
+    return fetch(GH_WORKER_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password: pw, content: content })
+    }).then(function (r) {
+      if (r.status === 403) return Promise.reject({ code: "gh_auth" });
+      if (r.status === 409) return Promise.reject({ code: "conflict" });
+      if (!r.ok) return r.json().catch(function () { return {}; }).then(function (e) {
+        return Promise.reject({ code: "gh_error", message: e && e.message });
       });
+      return r.json();
     }).catch(function (err) {
       if (err && err.code === "gh_auth") { try { localStorage.removeItem(GH_TOKEN_KEY); } catch (e) {} }
       return Promise.reject(err && err.code ? err : { code: "gh_error" });
@@ -1971,7 +1947,7 @@ main .wrap { padding-bottom: 88px; }
         return;
       }
       if (code === "gh_auth") {
-        toast("GitHub 토큰이 없거나 만료되었습니다. 상단의 'GitHub 연결'에서 다시 입력해 주세요.");
+        toast("비밀번호가 틀렸거나 없습니다. 상단의 '편집 비밀번호'에서 다시 입력해 주세요.");
       } else if (code === "not_writer" || code === "not_granted" || code === "consent_required" ||
           code === "capability_disabled" || code === "capability_removed" || code === "not_declared") {
         state.canWrite = false; state.editing = null; state.draft = null; state.confirmDel = null;
@@ -2149,7 +2125,7 @@ main .wrap { padding-bottom: 88px; }
     ghsetEl.hidden = !GH_MODE;
     ghsetEl.addEventListener("click", function () {
       var t = promptGhToken(true);
-      toast(t ? "토큰이 저장되었습니다." : "토큰 입력이 취소되었습니다.");
+      toast(t ? "비밀번호가 저장되었습니다." : "비밀번호 입력이 취소되었습니다.");
     });
   }
 
