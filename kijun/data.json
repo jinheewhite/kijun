@@ -667,7 +667,7 @@
   "id": "board-models",
   "cat": "board",
   "status": "info",
-  "symptom": "교실별 전자칠판 현황",
+  "symptom": "교실별 전자칠판 현황vv",
   "prep": [],
   "steps": [],
   "table": {
@@ -1083,9 +1083,9 @@
    },
    "noStats": true
   },
-  "keywords": [],
   "checked": "2026-10-19",
-  "important": true
+  "important": true,
+  "memo": []
  },
  {
   "id": "board-summary",
