@@ -38,6 +38,19 @@
   "checked": "2026-11-20"
  },
  {
+  "id": "e-mwirlylp",
+  "cat": "etc",
+  "status": "done",
+  "symptom": "쿨메신저",
+  "steps": [
+   "비밀번호 : 12345678",
+   "쿨메신저 젠투"
+  ],
+  "checked": "2026-11-16",
+  "prep": [],
+  "memo": []
+ },
+ {
   "id": "etc-claude-code-install",
   "cat": "etc",
   "status": "info",
