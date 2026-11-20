@@ -3,7 +3,7 @@
   "id": "etc-remote-desktop-ab",
   "cat": "etc",
   "status": "info",
-  "symptom": "A컴퓨터에서 B컴퓨터 원격조정하는 방법",
+  "symptom": "A컴퓨터에서 B컴퓨터 원격조정",
   "device": "크롬(Chrome) · 개인 구글 계정(gmail) · 크롬 원격 데스크톱 · B컴퓨터는 켜 둔 채 절전 해제 필요",
   "prep": [],
   "steps": [
