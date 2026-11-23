@@ -132,13 +132,12 @@
    "확인하기",
    "- PowerShell 창",
    "- `claude --version` -> 버전 번호가 나오면 성공.",
-   "우클릭하면 항상 [터미널에서 열기]가 나오게 하기 (윈도우 11 · 처음 한 번만)",
-   "- PowerShell 열기 [ 윈도우 + X]",
-   "- `reg add \"HKCU\\Software\\Classes\\CLSID\\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\\InprocServer32\" /f /ve` => Enter. [작업을 완료했습니다]가 나오면 성공.",
-   "- `Stop-Process -Name explorer -Force` => Enter. 화면이 잠깐 깜빡였다 돌아온다.",
-   "- 폴더 빈 곳 우클릭 → [추가 옵션 표시] 없이 긴 메뉴가 바로 나오고 그 안에 [터미널에서 열기]가 있다.",
-   "- 그대로면 노트북을 한 번 다시 시작한다.",
-   "- 되돌리기: `reg delete \"HKCU\\Software\\Classes\\CLSID\\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\" /f` => Enter → `Stop-Process -Name explorer -Force` => Enter."
+   "우클릭하면 항상 [터미널에서 열기]가 나오게 하기 (처음 한 번만 · 필요할 때만)",
+   "- 탐색기 주소창(폴더 경로 칸) 클릭 → `powershell` 입력 → Enter. 그 폴더에서 PowerShell 창이 열린다.",
+   "- `claude` 입력 → Enter",
+   "- Claude Code에게 `폴더 빈 곳을 우클릭하면 [추가 옵션 표시] 없이 항상 [터미널에서 열기]가 나오게 해줘` 라고 입력",
+   "- 명령 실행 허락을 물으면 내용을 보고 허락(Yes)한다. 화면이 잠깐 깜빡일 수 있다.",
+   "- 끝나면 폴더 빈 곳을 우클릭해 [터미널에서 열기]가 보이는지 확인. 안 보이면 노트북을 한 번 다시 시작한다."
   ],
   "memo": [
    "탐색기에서 폴더 빈 곳 우클릭 → [터미널에서 열기] → `claude` 로 바로 실행할 수 있다.",
