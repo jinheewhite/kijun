@@ -733,6 +733,7 @@ main .wrap { padding-bottom: 88px; }
   var GH_WORKER_URL = "https://floral-recipe-81b0.botem.workers.dev/";
   var GH_TOKEN_KEY = "dtm-edit-pw";
   if (GH_MODE) state.canWrite = true;
+  var ASSETS = null;
   if (GH_MODE) {
     DL = { save: function (opts) {
       return new Promise(function (resolve) {
@@ -745,6 +746,31 @@ main .wrap { padding-bottom: 88px; }
       });
     } };
     state.canDownload = true;
+    ASSETS = {
+      upload: function (blob, opts) {
+        var id = "kijun/files/blobs/" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8) +
+          "." + extForType((opts && opts.type) || blob.type);
+        return toB64(blob).then(function (b64c) {
+          return ghRequest({ action: "upload", path: id, contentBase64: b64c });
+        }).then(function () { return { id: id }; });
+      },
+      delete: function (id) {
+        return ghRequest({ action: "delete", path: id });
+      }
+    };
+  }
+  function extForType(type) {
+    type = String(type || "").toLowerCase();
+    if (type === "image/jpeg") return "jpg";
+    if (type === "image/png") return "png";
+    if (type === "image/gif") return "gif";
+    if (type === "image/webp") return "webp";
+    var slash = type.indexOf("/");
+    var ext = slash > -1 ? type.slice(slash + 1).replace(/[^a-z0-9]/g, "") : "";
+    return ext || "bin";
+  }
+  function blobUrl(a) {
+    return GH_MODE ? ("https://botem.com/" + a.id) : ("/_blob/" + a.id);
   }
   function ghPw() { try { return localStorage.getItem(GH_TOKEN_KEY) || ""; } catch (e) { return ""; } }
   function ghStorageOk() {
@@ -764,12 +790,17 @@ main .wrap { padding-bottom: 88px; }
     return p;
   }
   function ghPublish(path, content) {
+    return ghRequest({ content: content });
+  }
+  function ghRequest(extra) {
     var pw = promptGhToken(false);
     if (!pw) return Promise.reject({ code: "gh_auth" });
+    var payload = { password: pw };
+    for (var k in extra) payload[k] = extra[k];
     return fetch(GH_WORKER_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password: pw, content: content })
+      body: JSON.stringify(payload)
     }).then(function (r) {
       if (r.status === 403) return Promise.reject({ code: "gh_auth" });
       if (r.status === 409) return Promise.reject({ code: "conflict" });
@@ -782,7 +813,6 @@ main .wrap { padding-bottom: 88px; }
       return Promise.reject(err && err.code ? err : { code: "gh_error" });
     });
   }
-  var ASSETS = null;
   var STASH = "dtm-after-save";
 
   /* ---------- helpers ---------- */
@@ -1159,7 +1189,7 @@ main .wrap { padding-bottom: 88px; }
       }).join("") + "</ul>";
     }
     html += imgs.map(function (a) {
-      return '<figure class="shot"><img src="/_blob/' + esc(a.id) + '" alt="' + esc(a.name) + '" loading="lazy">' +
+      return '<figure class="shot"><img src="' + esc(blobUrl(a)) + '" alt="' + esc(a.name) + '" loading="lazy">' +
         "<figcaption><span>" + hl(a.name, ts) + " · " + fmtSize(a.size) + "</span>" + getBtn(e, a) + "</figcaption></figure>";
     }).join("");
     return html + "</div>";
@@ -1186,7 +1216,7 @@ main .wrap { padding-bottom: 88px; }
   }
   // 사진은 그대로, 그 밖의 파일(엑셀·한글 등)은 글자(base64)로 바꿔 보관했다가 받을 때 원래 파일로 되돌린다.
   function fileBlob(a) {
-    return fetch("/_blob/" + a.id).then(function (r) {
+    return fetch(blobUrl(a)).then(function (r) {
       if (!r.ok) throw { code: "missing" };
       return a.enc === "b64" ? r.text().then(b64Blob) : r.blob();
     });
@@ -1216,6 +1246,7 @@ main .wrap { padding-bottom: 88px; }
     if (code === "rate_limited") return "너무 빨리 올렸어요. 잠시 뒤 다시 올려 주세요.";
     if (code === "read_error") return "파일을 읽지 못했어요.";
     if (code === "not_granted" || code === "capability_disabled" || code === "capability_removed") return "이 화면에서는 파일을 올릴 수 없어요.";
+    if (code === "gh_auth") return "편집 비밀번호가 필요해요.";
     return "올리지 못했어요. 빼고 다시 올려 주세요.";
   }
   // 이번 입력 중에 올렸다가 뺀 파일만 지운다. 저장된 적 있는 파일은 예전 버전에서 쓰이므로 남겨 둔다.
@@ -1260,7 +1291,7 @@ main .wrap { padding-bottom: 88px; }
   function attEditList() {
     return (state.att || []).map(function (a) {
       var thumb = a.kind === "image"
-        ? '<img src="' + esc(a.preview || ("/_blob/" + a.id)) + '" alt="">'
+        ? '<img src="' + esc(a.preview || blobUrl(a)) + '" alt="">'
         : '<span class="ftype" style="--ft: ' + ftColor(a.name) + '">' + esc(ftLabel(a.name)) + "</span>";
       var st = a.st === "up" ? "올리는 중…" : a.st === "err" ? a.msg : fmtSize(a.size);
       return '<li class="att' + (a.st === "err" ? " err" : "") + '">' + thumb +
