@@ -1,5 +1,25 @@
 [
  {
+  "id": "e-mwvgpvkm",
+  "cat": "etc",
+  "status": "done",
+  "symptom": "기전 생기부 클로드 스킬",
+  "steps": [],
+  "checked": "2026-11-25",
+  "prep": [],
+  "memo": [],
+  "attachments": [
+   {
+    "id": "kijun/files/blobs/mwvgpmszdf8ha1.plain",
+    "name": "saenggibu-writer.zip",
+    "size": 2531848,
+    "type": "application/x-zip-compressed",
+    "kind": "file",
+    "enc": "b64"
+   }
+  ]
+ },
+ {
   "id": "etc-remote-desktop-ab",
   "cat": "etc",
   "status": "info",
