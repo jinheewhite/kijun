@@ -332,6 +332,9 @@ footer p { margin: 0; }
 .wired, .winold, .ezboard { font-weight: 700; }
 .wired, .winold { color: var(--s-check); }
 .ezboard { color: var(--s-info); }
+/* 비밀번호 칸: 평소엔 흐려 보이고, 마우스로 드래그(선택)하면 그 부분만 보인다 */
+.pwcell { color: transparent; text-shadow: 0 0 7px var(--ink); -webkit-text-fill-color: transparent; cursor: text; }
+.pwcell::selection { color: var(--ink); -webkit-text-fill-color: var(--ink); text-shadow: none; }
 .tbl tfoot td { background: var(--memo); white-space: nowrap; }
 .tbl tfoot td:first-child { font-size: 12px; font-weight: 600; letter-spacing: .04em; color: var(--muted); }
 .tbl tfoot tr.first td { border-top: 2px solid var(--line); }
@@ -863,6 +866,9 @@ main .wrap { padding-bottom: 88px; }
     if ((colName === "유선/무선" || colName === "유/무선") && s.trim() === "유선") return '<span class="wired">' + html + "</span>";
     if (/win10/i.test(s)) html = html.replace(/win10/gi, '<span class="winold">$&</span>');
     if (s.trim() === "이지칠판") html = html.replace(/이지칠판/g, '<span class="ezboard">$&</span>');
+    if (/비밀번호|비번|암호/.test(String(colName || "")) && s.trim()) {
+      return '<span class="pwcell" title="드래그(선택)하면 보여요">' + html + "</span>";
+    }
     return html;
   }
   function hay(e) {
