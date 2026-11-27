@@ -334,6 +334,8 @@ footer p { margin: 0; }
 .ezboard { color: var(--s-info); }
 /* 비밀번호 칸: 평소엔 흐려 보이고, 마우스로 드래그(선택)하면 그 부분만 보인다 */
 .pwcell { color: transparent; text-shadow: 0 0 7px var(--ink); -webkit-text-fill-color: transparent; cursor: text; }
+.hidebar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: -4px 0 0; }
+.hidebar small { color: var(--muted); }
 .pwcell::selection { color: var(--ink); -webkit-text-fill-color: var(--ink); text-shadow: none; }
 .tbl tfoot td { background: var(--memo); white-space: nowrap; }
 .tbl tfoot td:first-child { font-size: 12px; font-weight: 600; letter-spacing: .04em; color: var(--muted); }
@@ -852,9 +854,17 @@ main .wrap { padding-bottom: 88px; }
     }
     return out + esc(raw.slice(last));
   }
+  // ||글자|| = 가린 글자 (흐리게, 드래그하면 보임)
+  function hidden(part, ts) {
+    var p = part.split("||");
+    if (p.length % 2 === 0) p[p.length - 2] += "||" + p.pop();
+    return p.map(function (x, j) {
+      return j % 2 ? '<span class="pwcell" title="드래그하면 보여요">' + hl(x, ts) + "</span>" : hl(x, ts);
+    }).join("");
+  }
   function rich(raw, ts) {
     return String(raw == null ? "" : raw).split("`").map(function (part, i) {
-      var h = hl(part, ts);
+      var h = hidden(part, ts);
       return i % 2 ? "<code>" + h + "</code>" : h;
     }).join("");
   }
@@ -1911,6 +1921,8 @@ main .wrap { padding-bottom: 88px; }
       '<label for="f-steps">내용 · 해결 순서 <small>한 줄에 한 단계</small>' +
         '<div class="stepwrap"><div class="stepnums" id="f-steps-nums" aria-hidden="true"></div>' +
         '<textarea id="f-steps" rows="7">' + esc(d.steps) + "</textarea></div></label>" +
+      '<p class="hidebar"><button type="button" class="add" data-act="hide">드래그한 글자 가리기</button>' +
+        '<small>보는 사람이 드래그하면 보여요 · 다시 누르면 풀림</small></p>' +
       '<div class="sec"><p class="label">사진 · 파일 첨부</p>' +
         (ASSETS
           ? '<div class="drop" id="f-drop" tabindex="0" aria-label="첨부 칸: 캡처한 그림을 붙여 넣거나 파일을 끌어다 놓으세요">' +
@@ -2223,6 +2235,28 @@ main .wrap { padding-bottom: 88px; }
     });
   }
 
+  // 가리기: 마지막으로 쓰던 칸에서 드래그한 글자를 ||…|| 로 감싼다 (이미 감싸져 있으면 푼다)
+  var lastField = null;
+  listEl.addEventListener("focusin", function (ev) {
+    var t = ev.target;
+    if (t && t.closest && t.closest("#editor") && (t.tagName === "TEXTAREA" || (t.tagName === "INPUT" && t.type === "text"))) lastField = t;
+  });
+  function hideSel() {
+    var f = lastField;
+    if (!f || !document.body.contains(f) || f.selectionStart === f.selectionEnd) { toast("가릴 글자를 먼저 드래그하세요."); return; }
+    var a = f.selectionStart, b = f.selectionEnd, v = f.value, mid = v.slice(a, b);
+    if (/^\|\|[\s\S]*\|\|$/.test(mid) && mid.length >= 4) {
+      mid = mid.slice(2, -2);
+      f.value = v.slice(0, a) + mid + v.slice(b); b = a + mid.length;
+    } else if (v.slice(a - 2, a) === "||" && v.slice(b, b + 2) === "||") {
+      f.value = v.slice(0, a - 2) + mid + v.slice(b + 2); a -= 2; b = a + mid.length;
+    } else {
+      f.value = v.slice(0, a) + "||" + mid + "||" + v.slice(b); b = a + mid.length + 4;
+    }
+    f.focus();
+    try { f.setSelectionRange(a, b); } catch (e) {}
+    f.dispatchEvent(new Event("input", { bubbles: true }));
+  }
   listEl.addEventListener("click", function (ev) {
     var cp = ev.target.closest && ev.target.closest(".copy");
     if (cp) {
@@ -2295,6 +2329,7 @@ main .wrap { padding-bottom: 88px; }
     if (act === "open") { openEntry(id); return; }
     if (act === "list") { showList(); return; }
     if (act === "go") { if (id) openEntry(id); return; }
+    if (act === "hide") { hideSel(); return; }
     if (act === "pick") {
       var fi = document.getElementById("f-file");
       if (fi) fi.click();
