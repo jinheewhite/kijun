@@ -1,5 +1,19 @@
 [
  {
+  "id": "e-mwz0o5ow",
+  "cat": "etc",
+  "status": "done",
+  "symptom": "클로드아이디기전",
+  "steps": [
+   "- 아이디: kj.ai02@edusub.co.kr",
+   "- 비밀번호: ||Edujj20261022!||",
+   "- 사용 기간: 2026-10-22 ~ 2027-01-21 (3개월)"
+  ],
+  "checked": "2026-11-27",
+  "prep": [],
+  "memo": []
+ },
+ {
   "id": "cabinet-onboarding",
   "cat": "cabinet",
   "status": "info",
